@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>进化入口</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: rgb(0, 0, 0);
+        }
+
+        .guize {
+            position: absolute;
+            top: 20%;
+            width: 80%;
+            left: 10%;
+            text-align: center;
+            font-size: 1.5rem;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .jinru {
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            text-align: center;
+            font-size: 2rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        p {
+            text-decoration: none;
+            color: rgb(255, 255, 255);
+            height: 100%;
+            width: 100%;
+            font-size: 2.5rem;
+            text-align: center;
+            position: absolute;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="guize">进化规则：需要完成9次进化，每次进化由题库中随机抽取题目，每答对一题得10分，每答错一题分数不变，最终得分大于等于60分即为进化成功。答题时间共4分钟！</div>
+    <div class="jinru">
+            <p>开始进化</p>
+    </div>
+</body>
+
+<script>
+            // 接收mbti参数
+            var loc=location.href;
+        var n1=loc.length;//地址的总长度
+        var n2=loc.indexOf("=");//取得=号的位置
+        var id=decodeURI(loc.substr(n2+1, n1-n2));//从=号后面的内容
+
+        var jinru = document.querySelector(".jinru")
+        jinru.addEventListener("click",()=>{
+            window.open("../进化/improvement.html"+"?txt="+encodeURI(id));
+            window.close("beginImprove.html")
+        })
+
+</script>
+
+</html>

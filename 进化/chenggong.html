@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>进化成功</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 200vh;
+            overflow: auto;
+            background: linear-gradient(#92ffbc, #6495ED);
+        }
+
+        h1,
+        h2 {
+            color: rgb(255, 245, 233);
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 6rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+        }
+
+
+
+        .hongguan {
+            font-size: 2rem;
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 50vh;
+            text-align: center;
+            transition: top 2s;
+            top: -30%;
+        }
+
+        .text {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .showtext1 {
+            font-size: 2rem;
+            position: absolute;
+            left: 45%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            height: 50vh;
+            top: 150%;
+        }
+
+        .picture {
+            position: absolute;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            transition: opacity 1.5s;
+            height: 60vh;
+            top: 160%;
+            right: 8%;
+        }
+
+        .picture2 {
+            height: 65vh;
+        }
+
+        .showpicture {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="text">
+        <h1>进化成功！</h1>
+        <h2>获得100成长值</h2>
+    </div>
+    <div>
+        <div class="hongguan">
+            <h1>欢迎回到宏观世界</h1>
+        </div>
+    </div>
+    <div class="picture">
+        <img src="宏观.png" class="picture2">
+    </div>
+    <script>
+        const text = document.querySelector('.hongguan');
+        const picture = document.querySelector('.picture');
+
+        window.addEventListener('scroll', function () {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const distanceFromTop = scrollY / windowHeight;
+
+            if (distanceFromTop > 0.3) {
+                text.classList.add('showtext1');
+            }
+
+            if (distanceFromTop > 0.6) {
+                picture.classList.add('showpicture');
+            }
+        });
+    </script>
+</body>
+
+</html>

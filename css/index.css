@@ -1,0 +1,127 @@
+body {
+    background: url("../img/微信图片_202404131411462.jpg") repeat;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.cover {
+    width: 98vw;
+    height: 100vh;
+}
+
+.box {
+    top: 0;
+    left: 0;
+    width: 99vw;
+    height: 100vh;
+    position: relative;
+}
+
+.part {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+
+.title1 {
+    width: 77vw;
+    height: 15vh;
+    font-size: 12em;
+    position: relative;
+    top: 20vh;
+    left: 10vw;
+    color: white;
+}
+
+.title2 {
+    width: 77vw;
+    height: 15vh;
+    font-size: 9em;
+    text-align: center;
+    position: relative;
+    top: 45vh;
+    left: 20vw;
+    color: white;
+}
+
+.text1 {
+    width: 100vw;
+    height: 15vh;
+    font-size: 8em;
+    position: relative;
+    top: 20vh;
+    left: 5vw;
+    color: white;
+}
+
+.text2 {
+    width: 80vw;
+    height: 15vh;
+    font-size: 5em;
+    position: relative;
+    top: 32vh;
+    left: 5vw;
+    color: white;
+}
+
+.wsw {
+    width: 98vw;
+    height: 100vh;
+    background: url("../img/southeast.jfif") no-repeat center;
+    background-size: cover;
+}
+
+.btn-enter {
+    width: 30vw;
+    height: 10vh;
+    text-align: center;
+    line-height: 10vh;
+    font-size: 50px;
+    font-weight: 900;
+    z-index: 55;
+    position: absolute;
+    left: 35vw;
+    bottom: 5vh;
+    background: url("../img/zhangaiwu.png");
+    color: white;    
+}
+
+.text3 {
+    width: 100vw;
+    height: 15vh;
+    font-size: 4em;
+    text-align: center;
+    position: relative;
+    top: 30vh;
+    color: white;
+}
+
+.btn-choose {
+    width: 100vw;
+    height: 55vh;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.btn-mbti1 {
+    width: 25vw;
+    height: 15vh;
+    font-size: 2em;
+    text-align: center;
+    position: relative;
+    top: 55vh;
+    color: white;
+}
+
+.btn-mbti2 {
+    width: 25vw;
+    height: 15vh;
+    font-size: 2em;
+    text-align: center;
+    position: relative;
+    top: 55vh;
+    color: white;
+}

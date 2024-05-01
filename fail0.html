@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏失败</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .bg {
+            width: 100vw;
+            height: 100vh;
+            z-index: -999;
+            background: url("./img/ditu1.png") repeat;
+            filter: blur(7px);
+        }
+
+        h1 {
+            color: aliceblue;
+            top: 20%;
+            font-size: 6rem;
+            position: absolute;
+            left: 38%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .again {
+            font-size: 2rem;
+            border-radius: 30%;
+            left: 36%;
+            top: 55%;
+            height: 8vh;
+            width: 24vh;
+            position: absolute;
+        }
+
+        .close {
+            font-size: 2rem;
+            border-radius: 30%;
+            left: 56%;
+            top: 55%;
+            height: 8vh;
+            width: 24vh;
+            position: absolute;
+        }
+
+        p {
+            text-decoration: none;
+            color: aliceblue;
+            position: absolute;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .logo {
+            position: absolute;
+            z-index: 1;
+            height: 8vh;
+            width: auto;
+            left: 1%;
+            top: 1dvh;
+        }
+
+    </style>
+</head>
+
+<body>
+        <div class="bg"></div>
+        <img src="./img/logo.png" alt="" class="logo">
+        <div>
+            <h1>游戏失败</h1>
+        </div>
+        <div>
+            <div class="again">
+                <!-- <a href="'./newplayer.html'+'?txt='+encodeURI(id)"> -->
+                    <p>再玩一次</p>
+                </a>
+            </div>
+            <div>
+                <a href="#" onclick="exitPage()">
+                    <p class="close">退出游戏</p>
+                </a>
+            </div>
+        </div>
+
+</body>
+<script>
+    // 接收mbti参数
+    var loc=location.href;
+    var n1=loc.length;//地址的总长度
+    var n2=loc.indexOf("=");//取得=号的位置
+    var id=decodeURI(loc.substr(n2+1, n1-n2));//从=号后面的内容
+    // console.log(id)
+
+    var again = document.querySelector(".again")
+        again.addEventListener("click",()=>{
+            window.open("./newplayer.html"+"?txt="+encodeURI(id));
+            window.close("fail0.html")
+        })
+
+    function exitPage() {
+        window.close();
+
+    }
+</script>

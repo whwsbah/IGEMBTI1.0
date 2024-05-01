@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏失败</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+
+        .again {
+            font-size: 2rem;
+            border-radius: 30%;
+            left: 36%;
+            top: 55%;
+            height: 8vh;
+            width: 24vh;
+            position: absolute;
+        }
+
+        .close {
+            font-size: 2rem;
+            border-radius: 30%;
+            left: 45%;
+            top: 55%;
+            height: 8vh;
+            width: 24vh;
+            position: absolute;
+        }
+
+        h1 {
+            color: rgb(255, 255, 255);
+            top: 20%;
+            font-size: 6rem;
+            position: absolute;
+            left: 38%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        p {
+            text-decoration: none;
+            color: rgb(255, 255, 255);
+            position: absolute;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+</head>
+
+<body></body>
+<div>
+    <h1>进化失败</h1>
+</div>
+<div>
+    <div class="again">
+            <p class="close">返回游戏</p>
+    </div>
+</div>
+</body>
+
+<script>
+        // 接收mbti参数
+        var loc=location.href;
+    var n1=loc.length;//地址的总长度
+    var n2=loc.indexOf("=");//取得=号的位置
+    var id=decodeURI(loc.substr(n2+1, n1-n2));//从=号后面的内容
+    // console.log(id)
+
+    var again = document.querySelector(".again")
+        again.addEventListener("click",()=>{
+            window.open("./improvement.html"+"?txt="+encodeURI(id));
+            window.close("shibai.html")
+        })
+
+</script>

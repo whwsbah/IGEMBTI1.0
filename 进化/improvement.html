@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>答题页面</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: rgb(44, 80, 67);
+        }
+
+        .option-button.selected {
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+        }
+
+        #player {
+
+            background: url('./player.png') no-repeat;
+            background-size: contain;
+            left: 80%;
+            top: 50%;
+            position: absolute;
+            transition: transform 0.3s ease;
+        }
+
+        .box {
+            height: 65vh;
+            width: 60vw;
+            left: 11%;
+            top: 25%;
+            position: absolute;
+            align-items: center;
+            border: rgba(255, 255, 255, 0) solid 5px;
+            border-radius: 20px;
+            background-color: rgb(205, 255, 235);
+        }
+
+        .player {
+            position: absolute;
+            top: 40%;
+            left: 85%;
+        }
+
+        .jinhuatext {
+            position: absolute;
+            top: 30%;
+            left: 80%;
+            font-size: 2.5vh;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #options {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            margin-left: 3%;
+            font-size: 1vh;
+            top: 40%;
+        }
+
+        #question {
+            position: absolute;
+            margin-top: 2%;
+            margin-left: 2%;
+            margin-right: 2%;
+            height: 30vh;
+            font-size: 2.5vh;
+        }
+
+        #score {
+            position: absolute;
+            left: 25%;
+            top: 15%;
+            font-size: 3vh;
+        }
+
+        #timer {
+            position: absolute;
+            left: 55%;
+            top: 15%;
+            font-size: 3vh;
+        }
+
+        .jinhua {
+            position: absolute;
+            top: 4%;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            font-size: 7vh;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        button {
+            border: none;
+            background: none;
+            box-shadow: none;
+            text-align: left;
+            font-size: 2.5vh;
+        }
+
+        #right {
+            position: absolute;
+            left: 15%;
+            top: 70%;
+            top: 80%;
+            height: 10vh;
+            width: 20vw;
+            text-align: center;
+            display: none;
+            font-size: 2.5vh;
+        }
+
+        #no {
+            position: absolute;
+            left: 15%;
+            top: 70%;
+            top: 80%;
+            height: 10vh;
+            width: 20vw;
+            text-align: center;
+            display: none;
+            font-size: 2.5vh;
+        }
+
+        .next-question-button {
+            border-width: 3px;
+            border-style: solid;
+            border-color: rgb(36, 65, 23);
+            background-color: rgba(191, 255, 148, 0);
+            outline: none;
+            box-shadow: none;
+            font-size: 2.5vh;
+            cursor: pointer;
+            position: absolute;
+            top: 80%;
+            left: 80%;
+            transform: translateX(-50%);
+        }
+
+        #submit-answer {
+            position: absolute;
+            top: 110%;
+            border-width: 3px;
+            border-style: solid;
+            border-color: rgb(36, 65, 23);
+            background-color: rgba(191, 255, 148, 0);
+            width: 6vw;
+        }
+
+
+        .iimg {
+            position: absolute;
+            left: 11%;
+            top: 12%;
+            height: 7vh;
+            width: 7vh;
+            display: none;
+        }
+
+        .timg {
+            position: absolute;
+            left: 18%;
+            top: 12%;
+            height: 7vh;
+            width: 7vh;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="jinhua">开始进化</div>
+    <div class="box">
+        <div id="question"></div>
+        <div id="options"></div>
+        <div id="right">回答正确</div>
+        <div id="no">回答错误</div>
+        <button class="next-question-button" id="next-question">下一题</button>
+    </div>
+    <div id="score">得分：0</div>
+    <div id="timer">剩余时间：240秒</div>
+    <div class="player1">
+        <div class="jinhuatext">
+            <h1>进化进度：</h1>
+        </div>
+        <div id="player"></div>
+    </div>
+    <div id="i"><button onclick="add10()"><img class="iimg"> </button></div>
+    <div id="t"><button onclick="add30()"><img class="timg"> </button></div>
+
+    <script>
+        // 接收mbti参数
+        var loc=location.href;
+        var n1=loc.length;//地址的总长度
+        var n2=loc.indexOf("=");//取得=号的位置
+        var id=decodeURI(loc.substr(n2+1, n1-n2));//从=号后面的内容
+
+        var mbtiskills = id.split("")
+        // console.log(mbtiskills)
+        const ii = document.querySelector(".iimg")
+        const tt = document.querySelector(".timg")
+        for (var i = 0; i < 4; i++) {
+            if(mbtiskills[i] == "I"){
+                ii.style.display = "block"
+                ii.src = "./i.png"
+            }
+            if(mbtiskills[i] == "T"){
+                tt.style.display = "block"
+                tt.src = "./t.png"
+            }
+        }
+
+
+        let score = 0;
+        let playerSize = 100;
+        let currentQuestionIndex = 0;
+        let currentQuestionBankIndex = 0;
+        let remainingTime = 240;
+        let timer;
+        let selectedOptionIndex = null;
+        let isAnswerSubmitted = false;
+        const questionBanks = [
+            [
+                { question: "【第一次进化】在你的微观探险中，你遇到了一个蕴含古老智慧的基因图书馆。为了解锁图书馆中隐藏的基因密码并获得新的生物能力，你需要正确回答关于生物体化学组成的问题。下列有关组成生物体化学元素的论断，正确的是：", options: ["A. 在自然界中，无论是生物体还是无机物，碳元素的含量都是最多的。", "B. 人类、动物和植物之间所含的化学元素种类存在巨大差异。", "C. 构成生物体的化学元素在无机自然界中也能被找到。", "D. 不同生物体内的各种化学元素含量比例基本相似。"], answer: 2 },
+                { question: "【第一次进化】在你的微形态探索过程中，你发现了一个富含多种微量元素的矿物质区域。你的指导AI告诉你，锰（Mn）是许多关键酶的活化剂，其中包括硝酸还原酶，这种酶能帮助植物细胞利用硝酸盐。根据你对该矿物区域的研究，你意识到了微量元素对生命的重要性。这些矿物离子对维持生物体健康和活力至关重要。请回答微量元素的作用是，以解锁矿物区域中的资源并继续你的进化之旅：", options: ["A. 对维持细胞的形态和功能有重要作用", "B. 对维持生物体的生命活动有重要作用", "C. 对维持细胞的酸碱平衡有重要作用", "D. 对于调节细胞内的渗透压有重要作用"], answer: 1 },
+                { question: "【第一次进化】在你的微观探险中，你遇到了一处丰富的化学矿区，这些矿物质是构建生物生命分子的关键成分。为了帮助你的微形态合成重要的能量分子如三磷酸腺苷（ATP）及其他核苷酸，你需要识别出哪种无机盐对此过程至关重要。根据你收集到的数据，下列哪种无机盐是合成ATP、核苷酸所必需的？", options: ["A. 铁盐", "B. 磷酸盐", "C. 钙盐", "D. 硫酸盐"], answer: 1 },
+            ],
+            [
+                { question: "【第二次进化】在你的微观世界探险中，你遇到了一个神秘的生物化学实验室，里面存放着多种化合物，这些化合物对于生命活动至关重要。为了帮助你的微形态更好地理解和利用这些化合物，进行下一步的进化，你需要正确回答关于这些化合物的功能和作用。请根据你在实验室中的发现选择正确的论断：", options: ["A. 胆固醇和磷脂都属于固醇类，它们是构成所有细胞膜的基本成分。", "B. 佝偻病患者，一种由于骨骼发育不良导致的疾病，可以通过补充维生素D来进行辅助治疗。", "C. 淀粉和纤维素都被分类为植物多糖，它们是细胞能量的主要来源物质。", "D. DNA和RNA都是核酸的一种，虽然它们的组成元素完全相同，但只有DNA能够作为遗传信息的媒介。"], answer: 1 },
+                { question: "【第二次进化】在探索微观世界中一座由酶构建的清洁设施时，你的微形态必须学会如何安全高效地使用这些酶，才能避免受伤。正确理解下列关于加酶洗衣粉的使用注意事项，选择所有正确的说法：① 蛋白质类织物不能用加酶洗衣粉来洗涤。② 加酶洗衣粉使用的水温一般在50℃以下。③ 加酶洗衣粉不宜存放太久，因为它有保质期。④ 碱性蛋白酶洗衣粉会分解人体皮肤表面蛋白质，可能导致过敏性皮肤病，因此应避免与这类洗衣粉长时间接触。", options: ["A．①②", " B．②③④", "C．①③④ ", "D．①②③④"], answer: 3 },
+            ],
+            [
+                { question: "【第三次进化】在你的微观世界探险中，你进入了一个古老的微生物储藏室，这里利用精细调控的大气条件来保持生物样本的新鲜度。你的任务是帮助你的微形态理解这种技术，以便在资源有限的环境中延长其生存期。为了适应这种高级保存技术，你需要准确理解大气成分对生物呼吸的影响。请回答下列关于控制大气环境以延长水果储藏时间的作用机理：", options: ["A. 增加二氧化碳或抽除空气是为了促进有氧呼吸过程。", "B. 增加二氧化碳或抽除空气的主要作用是抑制有氧呼吸，从而减慢代谢速率。", "C. 这种环境调节主要是为了促进无氧呼吸，以提供能量。", "D. 主要目的是抑制无氧呼吸，从而减少能量消耗。"], answer: 1 },
+                { question: "【第三次进化】在你的微观世界探险中，你的微形态进入了一个先进的农业模拟区，这里采用封闭温室技术来探索最优化的植物生长条件。为了帮助你的微形态更好地理解和利用这些条件以支持其进化，你需要准确地评估不同的农业实践对作物产量的影响。请回答以下关于在封闭温室内提高作物产量的措施，选择不能提高产量的一项：", options: ["A. 使用有机化肥以提供充足的营养。", "B. 增大温室内昼夜的温差以模拟自然环境变化。", "C. 增强光照强度，确保植物进行有效的光合作用。", "D. 使用绿色玻璃作为温室的盖顶，以过滤部分光谱。"], answer: 3 },
+                { question: "【第三次进化】在你的微观世界中，你遇到了一个关于人体生理反应的教育模块，这里提供了关于呼吸过程的实时数据。为了进一步增强你的微形态的生存策略，你需要正确理解这些生理过程。请根据所学的知识选择下列关于人体呼吸过程的描述中错误的一项：", options: ["A. 在剧烈运动时，人体产生的二氧化碳是有氧呼吸和无氧呼吸的共同产物。", "B. 在有氧呼吸中，使用的氧气与产生的二氧化碳的比例大约是1:1。", "C. 小麦种子的储藏条件应该是低温、干燥和低氧环境。", "D. 在光合作用过程中，叶肉细胞内碳的转化路径是从二氧化碳到C3循环，然后转化成糖类和其他产物。"], answer: 0 },
+            ],
+            [
+                { question: "【第四次进化】在探索遗传传递实验室时，你发现了一个关于耳廓多毛症遗传机制的研究。这种特征似乎是从父亲传给儿子再到孙子，这暗示了其遗传载体的可能性。根据你所了解的关系，选择决定这种性状的基因最可能的位置：", options: ["A. X染色体上", "B. Y染色体上", "C. 常染色体上", "D. 无法确定"], answer: 1 },
+                { question: "【第四次进化】在你的微观世界探险中，你遇到了一个由高级遗传实验室构成的区域，这里的科学家们正在研究如何利用遗传技术创造出适应极端环境的作物和其他生物。为了帮助你的微形态适应这些技术并从中获益，你需要正确理解这些遗传改变的来源。请回答以下关于三种不同遗传改变作物的来源问题：你在实验室中发现了关于太空椒、无子西瓜和转基因抗虫棉的研究数据。这些作物的变异来源依次是：", options: ["A．环境改变、染色体变异、基因突变	", "B．基因突变、染色体变异、基因重组", "C．基因突变、环境改变、基因重组", "D．染色体变异、基因突变、基因重组"], answer: 1 },
+            ],
+            [
+                { question: "【第四次进化】在探索遗传传递实验室时，你发现了一个关于耳廓多毛症遗传机制的研究。这种特征似乎是从父亲传给儿子再到孙子，这暗示了其遗传载体的可能性。根据你所了解的关系，选择决定这种性状的基因最可能的位置：", options: ["A. X染色体上", "B. Y染色体上", "C. 常染色体上", "D. 无法确定"], answer: 1 },
+                { question: "【第四次进化】在你的微观世界探险中，你遇到了一个由高级遗传实验室构成的区域，这里的科学家们正在研究如何利用遗传技术创造出适应极端环境的作物和其他生物。为了帮助你的微形态适应这些技术并从中获益，你需要正确理解这些遗传改变的来源。请回答以下关于三种不同遗传改变作物的来源问题：你在实验室中发现了关于太空椒、无子西瓜和转基因抗虫棉的研究数据。这些作物的变异来源依次是：", options: ["A．环境改变、染色体变异、基因突变	", "B．基因突变、染色体变异、基因重组", "C．基因突变、环境改变、基因重组", "D．染色体变异、基因突变、基因重组"], answer: 1 },
+            ],
+            [
+                { question: "【第五次进化】在你的微观世界探险中，你发现了一个由微生物构成的先进生态系统，这些微生物已经学会了如何可持续地使用他们的资源。为了帮助你的微形态进化，并更好地适应环境，你需要决定哪些人类活动最符合可持续发展的理念。以下是你在观察这些微生物互动中学到的不同人类活动策略，请选择最符合可持续发展的方法：", options: ["A. 保护对人类有益的生物资源，同时消灭认为对人类不利的种群。", "B. 围湖造田和扩大生产领地，以增加可利用的土地面积。", "C. 开发和利用太阳能、风能、水能、潮汐能和地热能等可再生能源。", "D. 优先考虑经济效益，最大化自然资源的开发和利用。"], answer: 2 },
+                { question: "【第五次进化】在你的微观世界探险中，你进入了一个复杂的生态系统领域，这个系统中的微生物群体和环境之间形成了精细的平衡。为了帮助你的微形态理解并适应这种复杂的相互作用，以便在这个生态系统中生存和进化，你需要正确理解生物和无机环境之间的关系。在继续你的探险之前，请回答以下关于群落和生态系统的正确描述:", options: ["A. 在这个生态系统中，氮（N）、磷（P）等元素在生物群落和无机环境之间不断循环。", "B. 在生态系统的食物链中，能量的流动可以在相邻的营养级之间反向流动。", "C. 生态系统中的抵抗力与恢复力之间存在负相关关系。", "D. 人为干预和自然环境因素对于生态系统的演替方向具有相反的影响。"], answer: 0 },
+                { question: "【第五次进化】在你的微观世界探险中，你发现了一个高度自给自足的生态农业模块，它完美地模拟了地球上的高效农业系统。这些系统展示了微生物群体如何与环境协调共生，支持你的微形态的进化。为了理解这些系统的设计原理并应用这些原理来增强你的进化潜力，你需要准确识别生态农业实践中正确的描述。在继续你的探险之前，请回答以下关于生态农业的正确叙述：", options: ["A. “桑基鱼塘”模块展示了如何通过系统结构的优化来决定其功能，确保高效的物质循环和能量流动。", "B. 生态农业被设计为一个完全无消耗、多效益的工程系统，但实际上它需要仔细管理以确保可持续性。", "C. 农业生态系统的设计旨在模仿自然生态系统，但其抵抗力和稳定性通常不如自然系统。", "D. “无废弃物农业”模块通过循环利用所有物质和能量来展示如何实现环境零负担。"], answer: 0 },
+            ],
+            [
+                { question: "【第六次进化】在你的微观世界探险中，你探索到了一个由古老微生物组成的发酵区域。这些微生物拥有将简单原料转换成复杂化合物的奇妙能力。为了帮助你的微形态更好地理解和利用这些发酵过程以促进其进化，你需要正确理解这些古老技术的应用和原理。在继续你的探险之前，请回答以下关于传统发酵技术的正确描述：", options: ["A.制作腐乳需要利用毛霉的酶来分解豆腐中的蛋白质和其他物质。", "B.酿制果酒和果醋所需的酵母菌和醋酸菌的发酵底物和条件完全一样。", "C.制作果酒的最快途径是先制作果醋，再从果醋转化为果酒。", "D.制作果酒、果醋和腐乳的过程中，必须完全阻止微生物的生长和繁殖。"], answer: 0 },
+                { question: "【第六次进化】你的微观世界探险中，你探索到了一个由古老微生物组成的发酵区域。这些微生物拥有将简单原料转换成复杂化合物的奇妙能力。你注意到即使在没有高压蒸汽灭菌的情况下，制作葡萄酒时其他杂菌也无法生长。请根据你的观察选择下列描述中正确的原因：", options: ["A. 其他杂菌无法在无氧条件下生存。", "B. 经过冲洗处理后，其他杂菌已经被清除。", "C. 发酵液中的抗生素可以有效杀死或抑制杂菌的生长。", "D. 在这种缺氧环境下，酵母菌的代谢活动产生的酒精有效抑制了其他杂菌的生长。"], answer: 3 },
+
+            ],
+            [
+                { question: "【第六次进化】在你的微观世界探险中，你探索到了一个由古老微生物组成的发酵区域。这些微生物拥有将简单原料转换成复杂化合物的奇妙能力。为了帮助你的微形态更好地理解和利用这些发酵过程以促进其进化，你需要正确理解这些古老技术的应用和原理。在继续你的探险之前，请回答以下关于传统发酵技术的正确描述：", options: ["A.制作腐乳需要利用毛霉的酶来分解豆腐中的蛋白质和其他物质。", "B.酿制果酒和果醋所需的酵母菌和醋酸菌的发酵底物和条件完全一样。", "C.制作果酒的最快途径是先制作果醋，再从果醋转化为果酒。", "D.制作果酒、果醋和腐乳的过程中，必须完全阻止微生物的生长和繁殖。"], answer: 0 },
+                { question: "【第六次进化】你的微观世界探险中，你探索到了一个由古老微生物组成的发酵区域。这些微生物拥有将简单原料转换成复杂化合物的奇妙能力。你注意到即使在没有高压蒸汽灭菌的情况下，制作葡萄酒时其他杂菌也无法生长。请根据你的观察选择下列描述中正确的原因：", options: ["A. 其他杂菌无法在无氧条件下生存。", "B. 经过冲洗处理后，其他杂菌已经被清除。", "C. 发酵液中的抗生素可以有效杀死或抑制杂菌的生长。", "D. 在这种缺氧环境下，酵母菌的代谢活动产生的酒精有效抑制了其他杂菌的生长。"], answer: 3 },
+
+            ],
+            [
+                { question: "【第七次进化】在你的微观世界探险中，你的微形态发现了一个复杂的生态系统数据库，其中包含丰富的信息关于物种的定义和分类。为了帮助你的微形态更好地理解生物多样性并适应生态环境，你需要准确地评估关于物种定义的叙述。这些知识对于预测和理解生物间的互动非常关键。请根据所学的生态和进化理论，选择下列关于物种描述中错误的一项：", options: ["A. 物种被定义为形态上相似的个体群体，这些个体能够彼此交配并产生可育后代，通常生活在相似的环境条件下。", "B. 物种是由具有共同基因库的个体组成的群体，这些群体与其他群体在生殖上隔离。", "C. 判定物种的方法多种多样，但最重要的标准是生殖隔离，即不同物种之间不能产生可育后代。", "D. 即使是不同的物种，如果它们居住在同一地区，它们之间也可能发生基因交流。"], answer: 3 },
+            ],
+            [
+                { question: "【第七次进化】在你的微观世界探险中，你的微形态发现了一个复杂的生态系统数据库，其中包含丰富的信息关于物种的定义和分类。为了帮助你的微形态更好地理解生物多样性并适应生态环境，你需要准确地评估关于物种定义的叙述。这些知识对于预测和理解生物间的互动非常关键。请根据所学的生态和进化理论，选择下列关于物种描述中错误的一项：", options: ["A. 物种被定义为形态上相似的个体群体，这些个体能够彼此交配并产生可育后代，通常生活在相似的环境条件下。", "B. 物种是由具有共同基因库的个体组成的群体，这些群体与其他群体在生殖上隔离。", "C. 判定物种的方法多种多样，但最重要的标准是生殖隔离，即不同物种之间不能产生可育后代。", "D. 即使是不同的物种，如果它们居住在同一地区，它们之间也可能发生基因交流。"], answer: 3 },
+                { question: "【第七次进化】在微观世界探险中，你遇到了一个关于生物安全的高级研讨会，讨论的主题是生物武器的潜在危害和误解。作为微形态的探险者，理解这些信息至关重要，以避免危害生态平衡并确保生态安全。请根据所学的知识，评估下列关于生物武器的叙述，选择不正确的一项：", options: ["A. 生物武器的造价被认为非常昂贵，但实际上它们是成本相对低廉且具有大规模杀伤能力的武器。", "B. 在生物战中使用的微生物和毒素被统称为生物战剂，它们是造成伤害的主要因素。", "C. 生物武器可以通过多种途径散布，包括直接或间接通过食物、水源和其他生活必需品。", "D. 生物武器的使用会导致针对军事人员和平民的广泛伤害，具有无差别的杀伤效果。"], answer: 0 },
+            ],
+            [
+                { question: "【第八次进化】在微观实验室的一次探险中，你需要选择正确的实验技术以助力你的微生物更高效地进行遗传物质操作。根据实验目的和技术的特点，选择下列不能达到预期目的的实验：", options: ["A. 使用高温在PCR技术中解旋DNA。", "B. 使用Taq聚合酶构建表达载体。", "C. 使用胰蛋白酶制备动物细胞悬液。", "D. 使用纤维素酶和果胶酶制备植物原生质体。"], answer: 1 },
+                { question: "【第八次进化】在微观实验室的一次探险中，你需要选择正确的实验技术以助力你的微形态更高效地进行遗传物质操作。在一项关于遗传材料复制的探险中，了解PCR过程中引物的正确作用至关重要。选择引物在PCR技术中的正确作用描述：", options: ["A. 打开DNA双链，使DNA解旋为单链。", "B. 催化合成DNA子链。", "C. 使DNA聚合酶能够从引物的3′端开始复制。", "D. 为DNA复制过程提供模板。"], answer: 2 },
+                { question: "【第八次进化】在你的微观探险中，你的微形态遇到了一个挑战：从一种古老生物的样本中提取血红蛋白。为了成功提取并分析这一关键分子，你必须了解并选择正确的实验步骤。以下描述了血红蛋白提取过程中的关键步骤，选择正确的说法：", options: ["A. 血红蛋白提取和分离通常包括粗分离、样品处理、纯化、纯度鉴定等四个主要步骤。", "B. 血红蛋白的提取可以使用猪、牛、羊、蛙等多种动物血液作为实验材料。", "C. 在蛋白质的纯化和纯度鉴定中，使用最广泛的方法是SDS-聚丙烯酰胺凝胶电泳。", "D. 血红蛋白的处理过程包括红细胞的洗涤、血红蛋白的释放、透析和分离。"], answer: 2 },
+            ],
+            [
+                { question: "【第九次进化】在探索一个被遗忘的生物化学实验室时，你发现了一种多肽P1，具有强大的抗菌性和不希望的溶血性。为了使你的微形态能够利用这一发现制造出更适合医疗用途的药物，你需要确定下一步的研发方向。选择正确的步骤以优化这种多肽：", options: ["A. 构建包含目的多肽DNA片段的表达载体。", "B. 合成编码多肽P1的DNA片段。", "C. 设计抗菌性强但溶血性弱的蛋白质结构。", "D. 利用DNA分子杂交的方法对表达产物进行检测。"], answer: 2 },
+                { question: "【第九次进化】在深入研究微观世界中的基因编码技术时，你意识到蛋白质工程在多个领域的应用。为了进化你的微形态，你需要了解蛋白质工程的基本原理。选择描述蛋白质工程最准确的说法：", options: ["A. 由于涉及直接改造蛋白质，操作难度更大。", "B. 蛋白质工程的产品不能大规模生产，因为蛋白质本身不能遗传。", "C. 蛋白质工程也需要设计相应的基因。", "D. 蛋白质工程在各个领域有广泛应用。"], answer: 2 },
+                { question: "【第九次进化】在一个古老的生物工程设施中，你发现了关于蛋白质工程的成功应用的记录。这些信息对于你的微形态来说是宝贵的资源。为了利用这些资源推动你的进化，选择一个已经成功实现的蛋白质工程应用：", options: ["A. 改造胰岛素，生产速效型药品。", "B. 蛋白质工程在微电子学领域的应用。", "C. 生产体外耐储存的干扰素。", "D. 用蛋白质工程生产血红蛋白。"], answer: 0 },
+            ],
+            [
+                { question: "【第十次进化】在微观世界探险中，你遇到了一个关于生物安全的高级研讨会，讨论的主题是生物武器的潜在危害和误解。作为微形态的探险者，理解这些信息至关重要，以避免危害生态平衡并确保生态安全。请根据所学的知识，评估下列关于生物武器的叙述，选择不正确的一项：", options: ["A. 生物武器的造价被认为非常昂贵，但实际上它们是成本相对低廉且具有大规模杀伤能力的武器。", "B. 在生物战中使用的微生物和毒素被统称为生物战剂，它们是造成伤害的主要因素。", "C. 生物武器可以通过多种途径散布，包括直接或间接通过食物、水源和其他生活必需品。", "D. 生物武器的使用会导致针对军事人员和平民的广泛伤害，具有无差别的杀伤效果。"], answer: 0 },
+                { question: "【第十次进化】在微观世界探险中，你遇到了一个关于生物安全的高级研讨会，讨论的主题是生物武器的潜在危害和误解。作为微形态的探险者，理解这些信息至关重要，以避免危害生态平衡并确保生态安全。请根据所学的知识，评估下列关于生物武器的叙述，选择不正确的一项：", options: ["A. 生物武器的造价被认为非常昂贵，但实际上它们是成本相对低廉且具有大规模杀伤能力的武器。", "B. 在生物战中使用的微生物和毒素被统称为生物战剂，它们是造成伤害的主要因素。", "C. 生物武器可以通过多种途径散布，包括直接或间接通过食物、水源和其他生活必需品。", "D. 生物武器的使用会导致针对军事人员和平民的广泛伤害，具有无差别的杀伤效果。"], answer: 0 },
+            ],
+
+        ];
+
+        function getRandomQuestionFromBank(bankIndex) {
+            const bank = questionBanks[bankIndex];
+            const randomIndex = Math.floor(Math.random() * bank.length);
+            return bank[randomIndex];
+        }
+
+        function displayQuestion() {
+            const questionDiv = document.getElementById("question");
+            const optionsDiv = document.getElementById("options");
+            const scoreDiv = document.getElementById("score");
+            const playerDiv = document.getElementById("player");
+            const timerDiv = document.getElementById("timer");
+
+            const currentQuestion = getRandomQuestionFromBank(currentQuestionBankIndex);
+            const correctAnswerIndex = currentQuestion.answer;
+
+            // 显示题目和选项
+            questionDiv.textContent = currentQuestion.question;
+            optionsDiv.innerHTML = "";
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.classList.add("option-button"); // 添加CSS类便于后续处理
+
+                button.onclick = function () {
+                    if (!isAnswerSubmitted) { // 只有在未提交答案时才允许改变选项框颜色
+                        if (selectedOptionIndex !== null) {
+                            document.querySelector(`.option-button:nth-child(${selectedOptionIndex + 1})`).classList.remove("selected");
+                        }
+
+                        this.classList.add("selected");
+                        selectedOptionIndex = index;
+                    }
+                };
+                optionsDiv.appendChild(button);
+            });
+            // 添加提交答案按钮
+            const submitButton = document.createElement("button");
+            submitButton.textContent = "提交答案";
+            submitButton.id = "submit-answer";
+            submitButton.addEventListener("click", function () {
+                if (selectedOptionIndex !== null) {
+                    checkAnswer(selectedOptionIndex, correctAnswerIndex);
+                    submitButton.disabled = true; // 提交后禁用提交按钮
+                    isAnswerSubmitted = true;
+                    // 提交答案后标记为已提交
+                }
+            });
+            optionsDiv.appendChild(submitButton);
+
+            // 更新得分和玩家形象
+            scoreDiv.textContent = "得分：" + score;
+            playerDiv.style.width = playerSize + "px";
+            playerDiv.style.height = playerSize + "px";
+
+            // 设置定时器
+            timer = setInterval(() => {
+                remainingTime--;
+                timerDiv.textContent = "剩余时间：" + remainingTime + "秒";
+                if (remainingTime <= 0) {
+                    // 时间结束或分值达到60分，跳转到其他页面
+                    if (score >= 60) {
+                        // 分值达到70分，跳转到其他页面
+                        window.location.href = "chenggong.html";
+                    } else {
+                        // 分值不够60分，显示进化失败
+                        window.location.href = "shibaii.html";
+                    }
+                    clearInterval(timer);
+                }
+            }, 3000);
+            document.getElementById("next-question").addEventListener("click", handleNextQuestionClick);
+        }
+        function checkAnswer(selectedOption, correctAnswerIndex) {
+
+            if (selectedOption === correctAnswerIndex) {
+                // 答对加分并放大玩家图片
+                score += 10;
+                playerSize += 30;
+
+                document.getElementById("right").textContent = "回答正确！";
+                document.getElementById("right").style.display = "block";
+                document.getElementById("no").style.display = "none";
+
+                // 更新得分显示
+                const scoreDiv = document.getElementById("score");
+                scoreDiv.textContent = "得分：" + score;
+            } else {
+                // 答错仅显示正确答案（不扣分）
+                document.getElementById("no").textContent = "回答错误！";
+                document.getElementById("right").style.display = "none";
+                document.getElementById("no").style.display = "block";
+            }
+
+            // 更新题目索引
+            currentQuestionIndex++;
+
+
+            // 更新玩家形象大小
+            document.getElementById("player").style.width = playerSize + "px";
+            document.getElementById("player").style.height = playerSize + "px";
+        }
+        // 初始显示第一道题目
+        displayQuestion();
+
+        // 定义“下一题”按钮点击事件处理函数
+        function handleNextQuestionClick() {
+            if (!isAnswerSubmitted) {
+                event.preventDefault();
+                alert("请先回答当前题目再点击下一题！");
+                return;
+            }
+            // 清除当前选中项样式
+            if (selectedOptionIndex !== null) {
+                document.querySelector(`.option-button:nth-child(${selectedOptionIndex + 1})`).classList.remove("selected");
+            }
+
+            // 重置选中项索引
+            selectedOptionIndex = null;
+
+            // 重置答案提交状态
+            isAnswerSubmitted = false;
+
+            // 隐藏“回答正确”和“回答错误”提示
+            document.getElementById("right").style.display = "none";
+            document.getElementById("no").style.display = "none";
+
+            // 更新题目索引
+            currentQuestionBankIndex = (currentQuestionBankIndex + 1) % questionBanks.length;
+            const currentQuestion = getRandomQuestionFromBank(currentQuestionBankIndex);
+            // 如果当前题库的题目已全部答完，则切换至下一个题库
+            if (currentQuestionIndex >= questionBanks[currentQuestionBankIndex].length) {
+                currentQuestionIndex = 0;
+                currentQuestionBankIndex++;
+                if (currentQuestionBankIndex >= questionBanks.length) {
+                    // 所有题库题目已答完，跳转至结果页
+                    if (score >= 60) {
+                        // 分值达到60分，跳转到其他页面
+                        window.location.href = "chenggong.html";
+                    } else {
+                        // 分值不够60分，显示进化失败
+                        window.location.href = "./shibai.html"+"?txt="+encodeURI(id);
+                    }
+                }
+            }
+
+            // 重新显示下一题
+            displayQuestion();
+        }
+        function add10() {
+            const i = document.getElementById("i");
+            const scoreDiv = document.getElementById("score");
+            const playerDiv = document.getElementById("player");
+
+            score += 10;
+            scoreDiv.textContent = "得分：" + score;
+            playerSize += 30;
+            playerDiv.style.width = playerSize + "px";
+            playerDiv.style.height = playerSize + "px";
+            i.style.display = 'none';
+        }
+        function add30() {
+            const t = document.getElementById("t");
+            remainingTime = remainingTime + 30;
+            t.style.display = 'none';
+        }
+        // 初始显示第一道题目
+        displayQuestion();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏失败</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .backgro {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            z-index: -999;
+            filter: blur(7px);
+        }
+
+        h1 {
+            color: aliceblue;
+            top: 20%;
+            font-size: 6rem;
+            position: absolute;
+            left: 38%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .again {
+            font-size: 2rem;
+            border-radius: 30%;
+            left: 36%;
+            top: 55%;
+            height: 8vh;
+            width: 24vh;
+            position: absolute;
+        }
+
+        .close {
+            font-size: 2rem;
+            border-radius: 30%;
+            left: 56%;
+            top: 55%;
+            height: 8vh;
+            width: 24vh;
+            position: absolute;
+        }
+
+        p {
+            text-decoration: none;
+            color: aliceblue;
+            position: absolute;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .logo {
+            position: absolute;
+            z-index: -998;
+            height: 8vh;
+            width: auto;
+            left: 1%;
+            top: 1dvh;
+        }
+
+        .player {
+            height: 8vh;
+            width: auto;
+            position: absolute;
+            left: 25%;
+            top: 50%;
+            filter: blur(7px);
+        }
+
+        .resource1 {
+            position: absolute;
+            z-index: -998;
+            left: 20%;
+            top: 25%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource2 {
+            position: absolute;
+            z-index: -998;
+            left: 35%;
+            top: 25%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource3 {
+            position: absolute;
+            z-index: -998;
+            left: 50%;
+            top: 10%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource4 {
+            position: absolute;
+            z-index: -998;
+            left: 56%;
+            top: 67%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource5 {
+            position: absolute;
+            z-index: -998;
+            left: 90%;
+            top: 48%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource6 {
+            position: absolute;
+            z-index: -998;
+            left: 18%;
+            top: 86%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource7 {
+            position: absolute;
+            z-index: -998;
+            left: 35%;
+            top: 45%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource8 {
+            position: absolute;
+            z-index: -998;
+            left: 77%;
+            top: 36%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource9 {
+            position: absolute;
+            z-index: -998;
+            left: 15%;
+            top: 61%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource10 {
+            position: absolute;
+            z-index: -998;
+            left: 63%;
+            top: 25%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource11 {
+            position: absolute;
+            z-index: -998;
+            left: 69%;
+            top: 20%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource12 {
+            position: absolute;
+            z-index: -998;
+            left: 80%;
+            top: 90%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource13 {
+            position: absolute;
+            z-index: -998;
+            left: 45%;
+            top: 69%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource14 {
+            position: absolute;
+            z-index: -998;
+            left: 32%;
+            top: 70%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource15 {
+            position: absolute;
+            z-index: -998;
+            left: 93%;
+            top: 69%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+
+        .resource16 {
+            position: absolute;
+            z-index: -998;
+            left: 89%;
+            top: 10%;
+            height: 6vh;
+            width: auto;
+            filter: blur(7px);
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <img class="backgro" src="ditu.png">
+        <img class="logo" src="logo.png">
+        <img class="player" src="player.png">
+        <img class="resource1" src="mei.png">
+        <img class="resource2" src="mei.png">
+        <img class="resource3" src="mei.png">
+        <img class="resource4" src="mei.png">
+        <img class="resource5" src="jiyin.png">
+        <img class="resource6" src="jiyin.png">
+        <img class="resource7" src="jiyin.png">
+        <img class="resource8" src="jiyin.png">
+        <img class="resource9" src="zhili.png">
+        <img class="resource10" src="zhili.png">
+        <img class="resource11" src="zhili.png">
+        <img class="resource12" src="zhili.png">
+        <img class="resource13" src="xinhao.png">
+        <img class="resource14" src="xinhao.png">
+        <img class="resource15" src="xinhao.png">
+        <img class="resource16" src="xinhao.png">
+    </div>
+    <div>
+        <h1>游戏失败</h1>
+    </div>
+    <div>
+        <div class="again">
+                <p>再玩一次</p>
+            </a>
+        </div>
+        <div>
+            <a href="#" onclick="exitPage()">
+                <p class="close">退出游戏</p>
+            </a>
+        </div>
+    </div>
+    <script>
+    // 接收mbti参数
+    var loc=location.href;
+    var n1=loc.length;//地址的总长度
+    var n2=loc.indexOf("=");//取得=号的位置
+    var id=decodeURI(loc.substr(n2+1, n1-n2));//从=号后面的内容
+    // console.log(id)
+
+    var again = document.querySelector(".again")
+        again.addEventListener("click",()=>{
+            window.open("./game.html"+"?txt="+encodeURI(id));
+            window.close("fail0.html")
+        })
+
+        function exitPage() {
+            window.close();
+
+        }
+    </script>
+</body>

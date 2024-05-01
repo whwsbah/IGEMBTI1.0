@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏页面</title>
+    <style>
+        body {
+            background: url("./img/ditu1.png") repeat;
+            margin: 0;
+            padding: 0;
+        }
+
+        #game-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+
+        .backgro {
+            position: absolute;
+            z-index: -999;
+            height: 100%;
+            width: 100%;
+        }
+
+        .logo {
+            position: absolute;
+            z-index: -998;
+            height: 8vh;
+            width: auto;
+            left: 1%;
+            top: 1vh;
+        }
+
+        .player {
+            width: 4vw;
+            height: 8vh;
+            position: absolute;
+            top: 10%;
+            left: 6%;
+            border-radius: 50%;
+        }
+
+        .resource {
+            width: 6vw;
+            height: 6vh;
+            position: absolute;
+        }
+
+        .zhangai {
+            width: 66px;
+            height: 66px;
+            position: absolute;
+        }
+
+        .resource1 {
+            width: 6vh;
+            height: auto;
+            position: absolute;
+        }
+
+        .zhangai1 {
+            position: absolute;
+        }
+
+        #scoreContainer {
+            left: 16%;
+            top: 1%;
+            position: absolute;
+            z-index: 5;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 3rem;
+            color: rgb(162, 193, 255);
+            font-weight: 700;
+        }
+        .promptbox{
+            width: 60vw;
+            height: 20vh;
+            position: absolute;
+            left: 16vw;
+            top: 10vh;
+            background-color: white;
+            border-radius: 20px;
+            border: 5px grey solid;
+            z-index: 666; 
+            padding: 2vw;
+            font-size: 2rem;
+            padding-top: 30vh;
+            padding-bottom: 30vh;
+            padding: 30vh 4vw;
+        }
+        .ok{
+            width: 10vw;
+            background-color: grey;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: rgb(162, 193, 255);
+            text-align: center;
+            position: absolute;
+            bottom: 15vh;
+            left: 45vw;
+            z-index: 667;
+        }
+        .gotogame{
+            background-color:  rgb(162, 193, 255);
+            width: 10vw;
+            font-size: 1.8rem;
+            text-align: center;
+            /* line-height: 4vw; */
+            /* height: 4vw; */
+            position: absolute;
+            right: 2vw;
+            top: 2vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game-container">
+        <div class="promptbox">通过键盘控制角色移动，注意躲避障碍物，收集资源点使成长值增加。</div>
+        <div class="ok">O K</div>
+        <div class="gotogame">开始游戏</div>
+
+        <img id="logo" class="logo" src="./img/logo.png">
+        <img id="player" class="player" src="./img/player.png">
+        <div id="resource" class="resource">
+            <img id="resource1" class="resource1" src="./img/jiyin.png">
+        </div>
+        <div id="resource" class="resource">
+            <img id="resource1" class="resource1" src="./img/zhili.png">
+        </div>
+        <div id="resource" class="resource">
+            <img id="resource1" class="resource1" src="./img/xinhao.png">
+        </div>
+        <div id="resource" class="resource">
+            <img id="resource1" class="resource1" src="./img/mei.png">
+        </div>
+        <div id="resource" class="resource">
+            <img id="resource1" class="resource1" src="./img/受损DNA.png">
+        </div>
+        <div id="resource" class="resource">
+            <img id="resource1" class="resource1" src="./img/病毒.png">
+        </div>
+        <div id="zhangai" class="zhangai">
+            <img id="zhangai1" class="zhangai1" style="width: 3vw;height: 75vh;" src="./img/bage.jpg">
+        </div>
+        <div id="zhangai" class="zhangai">
+            <img id="zhangai1" class="zhangai1" style="width: 3vw;height: 75vh;" src="./img/bage.jpg">
+        </div>
+        <div id="zhangai" class="zhangai">
+            <img id="zhangai1" class="zhangai1" style="width: 3vw;height: 75vh;" src="./img/bage.jpg">
+        </div>
+        <div id="zhangai" class="zhangai">
+            <img id="zhangai1" class="zhangai1" style="width: 3vw;height: 75vh;" src="./img/bage.jpg">
+        </div>
+        <div id="scoreContainer">成长值：<span id="score">0</span></div>
+    </div>
+
+    <script>
+        // 接收mbti参数
+        var loc=location.href;
+        var n1=loc.length;//地址的总长度
+        var n2=loc.indexOf("=");//取得=号的位置
+        var id=decodeURI(loc.substr(n2+1, n1-n2));//从=号后面的内容
+        // console.log(id)
+
+
+        var gotogame = document.querySelector(".gotogame")
+        gotogame.addEventListener("click",()=>{
+            window.open("./收集资源/game.html"+"?txt="+encodeURI(id));
+            window.close("newplayer.html")
+        })
+        const gameContainer = document.getElementById("game-container");
+        const player = document.getElementById("player");
+        /*障碍物位置*/
+        let zhangais = [
+            { x: 20, y: 2, type: "zhangai" },
+            { x: 40, y: 24, type: "zhangai" },
+            { x: 60, y: 2, type: "zhangai" },
+            { x: 80, y: 24, type: "zhangai" },
+        ]
+        /*障碍物显示*/
+        function displayzhangais() {
+            zhangais.forEach(zhangai => {
+                const zhangaiElement = document.getElementById("zhangai");
+                zhangaiElement.style.top = `${zhangai.y}vh`;
+                zhangaiElement.style.left = `${zhangai.x}vw`;
+                gameContainer.appendChild(zhangaiElement);
+            });
+        }
+        /*检查是否撞到障碍物，若撞到返回失败页面*/
+        function checkForzhangaiCollection() {
+            zhangais.forEach((zhangai, index1) => {
+                const playerRect = player.getBoundingClientRect();
+                const zhangaiRect = document.getElementsByClassName("zhangai1")[index1].getBoundingClientRect();
+
+                if (playerRect.left < zhangaiRect.right &&
+                    playerRect.right > zhangaiRect.left &&
+                    playerRect.top < zhangaiRect.bottom &&
+                    playerRect.bottom > zhangaiRect.top) {
+                    window.open("./fail0.html"+"?txt="+encodeURI(id));
+                    window.close("game.html")
+                    return;
+                }
+            });
+        }
+        /*资源点位置*/
+        let resources = [
+            { x: 10, y: 70, type: "resource" },
+            { x: 26, y: 41, type: "resource" },
+            { x: 50, y: 10, type: "resource" },
+            { x: 44, y: 86, type: "resource" },
+            { x: 65, y: 29, type: "resource" },
+            { x: 87, y: 86, type: "resource" },
+        ];
+        /*资源点显示*/
+        function displayResources() {
+            resources.forEach(resource => {
+                const resourceElement = document.getElementById("resource");
+                resourceElement.style.top = `${resource.y}vh`;
+                resourceElement.style.left = `${resource.x}vw`;
+                gameContainer.appendChild(resourceElement);
+            });
+        }
+        // 提示框内容
+        let prompts = [
+            {prompt:"恭喜你获得目的基因资源点。目的基因携带有预期产物的遗传信息，在受体细胞中可表达出预期产物。（在游戏中，获得目的基因资源点可使成长值+10）"},
+            {prompt:"恭喜你获得质粒资源点。将目的基因导入质粒可构建基因表达载体。（在游戏中，获得目的基因资源点可使成长值+10）"},
+            {prompt:"恭喜你获得信号分子资源点。信号分子可使受体细胞处于感受态，基因表达载体可以导入受体细胞。（在游戏中，获得目的基因资源点可使成长值+10）"},
+            {prompt:"恭喜你获得酶分子资源点。酶可以催化DNA分子进行转录和翻译。（在游戏中，获得目的基因资源点可使成长值+10）"},
+            {prompt:"你遇到了受损DNA挑战点。在复制过程中，DNA分子可能受到损伤，导致碱基错配。（在游戏中，遇到受损DNA挑战点需要根据碱基互补配对原则进行修复，修复成功可使成长值+20，失败则-20）"},
+            {prompt:"你遇到了病毒挑战点。病毒在合成生物学中也发挥重要作用，如病毒也可以作为目的基因的载体、筛选有抗性基因的受体细胞等，但其有可能导致病毒发生突变，对生物安全造成危害。（在游戏中，遇到病毒挑战点需要回答病毒相关的问题，回答正确可使成长值+20，错误则-20）"},
+        ]
+        // 控制提示框出现
+        const ok = document.querySelector(".ok")
+        const promptbox = document.querySelector(".promptbox")
+        ok.addEventListener("click",()=>{
+            promptbox.style.display = "none"
+            ok.style.display = "none"
+        })
+
+        /*玩家移动*/
+        function movePlayer(x, y) {
+            player.style.left = `${x}px`;
+            player.style.top = `${y}px`;
+        }
+
+        /*检查资源点收集，收集到资源点，资源点消失，左上方成长值加10*/
+        function checkForResourceCollection() {
+            resources.forEach((resource, index) => {
+                const playerRect = player.getBoundingClientRect();
+                const resourceRect = document.getElementsByClassName("resource")[index].getBoundingClientRect();
+
+                if (playerRect.left < resourceRect.right &&
+                    playerRect.right > resourceRect.left &&
+                    playerRect.top < resourceRect.bottom &&
+                    playerRect.bottom > resourceRect.top) {
+                        // console.log(index)
+
+                    // 引入提示
+                    promptbox.style.display = "block"
+                    ok.style.display = "block"
+                    promptbox.textContent = prompts[index].prompt
+
+                    let currentScore = parseInt(document.getElementById("score").textContent, 10);
+                    currentScore += 10;
+                    document.getElementById("score").textContent = currentScore;
+                    resources.splice(index, 1);
+                    prompts.splice(index, 1);
+                    document.getElementsByClassName("resource")[index].remove();
+                }
+            });
+        }
+
+
+        displayzhangais();
+        displayResources();
+
+        /*键盘控制玩家移动、玩家形象随运动方向切换*/
+        document.addEventListener("keydown", (event) => {
+            const speed = 10;
+            const playerright = document.getElementById("player");
+            switch (event.key) {
+                case "ArrowUp":
+                    movePlayer(player.offsetLeft, player.offsetTop - speed);
+                    playerright.src = './img/playerup.png';
+                    break;
+                case "ArrowDown":
+                    movePlayer(player.offsetLeft, player.offsetTop + speed);
+                    playerright.src = './img/playerdown.png';
+                    break;
+                case "ArrowLeft":
+                    movePlayer(player.offsetLeft - speed, player.offsetTop);
+                    playerright.src = './img/player.png';
+                    break;
+                case "ArrowRight":
+                    movePlayer(player.offsetLeft + speed, player.offsetTop);
+                    playerright.src = './img/playerright.png';
+                    break;
+            }
+            checkForResourceCollection();
+            checkForzhangaiCollection();
+        });
+
+    </script>
+</body>
+
+</html>
